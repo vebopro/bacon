@@ -14,6 +14,18 @@ let isJumping = false;
 let scrollX = 0;
 let gameIsOver = false;
 
+const jumpSound = new Audio('jump.mp3');
+
+// キー入力状態を保持
+let keys = {};
+
+document.addEventListener('keydown', (e) => {
+    keys[e.code] = true;
+});
+document.addEventListener('keyup', (e) => {
+    keys[e.code] = false;
+});
+
 // ブロック、穴、敵キャラの配置
 const blocks = [
     { x: 300, y: 50 },
@@ -55,11 +67,12 @@ enemies.forEach(enemy => {
     enemiesDiv.appendChild(enemyEl);
 });
 
-// キー操作
-document.addEventListener('keydown', (e) => {
+// ゲームループ
+function gameLoop() {
     if (gameIsOver) return;
 
-    if (e.code === 'ArrowRight') {
+    // 移動キー処理
+    if (keys['ArrowRight']) {
         charX += 5;
         if (charX > 400) {
             scrollX += 5;
@@ -70,26 +83,25 @@ document.addEventListener('keydown', (e) => {
             goal.style.left = (4000 - scrollX - 50) + 'px';
         }
     }
-    if (e.code === 'ArrowLeft' && charX > 0) {
+    if (keys['ArrowLeft'] && charX > 0) {
         charX -= 5;
     }
-    if (e.code === 'Space' && !isJumping) {
+
+    // ジャンプ処理
+    if (keys['Space'] && !isJumping) {
         charVelocityY = 10;
         isJumping = true;
+        jumpSound.play();
     }
-    character.style.left = charX + 'px';
-});
 
-// ゲームループ
-function gameLoop() {
-    if (gameIsOver) return;
+    character.style.left = charX + 'px';
 
     // 重力
     charVelocityY -= 0.5;
     charY += charVelocityY;
     character.style.bottom = charY + 'px';
 
-    // 地面との衝突
+    // 地面とブロックとの衝突
     let onBlock = false;
     blocks.forEach(block => {
         const blockX = block.x - scrollX;
@@ -122,17 +134,17 @@ function gameLoop() {
         const enemyX = enemy.x - scrollX;
         const enemyEl = document.getElementById(enemy.id);
         if (charX + 50 > enemyX && charX < enemyX + 30) {
-            if (charY > 80 && charVelocityY < 0) { // 上から踏む
+            if (charY > 80 && charVelocityY < 0) {
                 enemy.alive = false;
                 enemyEl.style.display = 'none';
-            } else if (charY <= 80) { // 横から衝突
+            } else if (charY <= 80) {
                 gameOver.style.display = 'block';
                 gameIsOver = true;
             }
         }
     });
 
-    // ゴール
+    // ゴール到達
     const goalX = 4000 - scrollX - 50;
     if (charX + 50 > goalX && charY <= 150) {
         gameClear.style.display = 'block';

@@ -10,7 +10,7 @@
 #character {
     width: 50px;
     height: 70px;
-    background: url('character.png') no-repeat center center; /* キャラクター画像 */
+    background: url('character.png') no-repeat center center;
     background-size: contain;
     position: absolute;
     bottom: 50px;
@@ -18,7 +18,7 @@
 }
 
 #ground {
-    width: 4000px; /* 長い地面 */
+    width: 4000px;
     height: 50px;
     background: green;
     position: absolute;
@@ -48,8 +48,14 @@
     bottom: 50px;
 }
 
-#enemy1 { background: url('mushroom.png') no-repeat center center; background-size: contain; }
-#enemy2 { background: url('turtle.png') no-repeat center center; background-size: contain; }
+#enemy1 {
+    background: url('mushroom.png') no-repeat center center;
+    background-size: contain;
+}
+#enemy2 {
+    background: url('turtle.png') no-repeat center center;
+    background-size: contain;
+}
 
 #goal {
     width: 10px;
@@ -60,7 +66,8 @@
     right: 50px;
 }
 
-#game-over, #game-clear {
+#game-over,
+#game-clear {
     display: none;
     position: absolute;
     top: 50%;
